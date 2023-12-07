@@ -1,57 +1,44 @@
 const express = require('express');
-const helper = require('./apis/helper');
-const pokemon = require('./apis/pokemon')
-const users = require('./apis/user')
-const app = express();
-const mongoose = require('mongoose')
-const cors = require('cors')
-const path = require('path')
+const mongoose = require('mongoose');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
+// Import routes
+const userRoutes = require('./apis/user');
+const statusUpdateRoutes = require('./apis/statusUpdate');
+const authenticateToken = require('./apis/authenticateToken'); 
 
-const mongoDBEndpoint = 'mongodb+srv://hunter:banana2@seawebdevfall2021.ykjok.mongodb.net/?retryWrites=true&w=majority';
-mongoose.connect(mongoDBEndpoint,  { useNewUrlParser: true });
+const app = express();
+
+// MongoDB connection
+const mongoDBEndpoint = process.env.MONGODB_URI || 'mongodb+srv://monayyin:<meiyoumima>@cluster0.7t4mevw.mongodb.net/?retryWrites=true&w=majority';
+mongoose.connect(mongoDBEndpoint, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Error connecting to MongoDB:'));
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// API routes
+app.use('/api/users', userRoutes);
+app.use('/api/statusUpdate', authenticateToken, statusUpdateRoutes); // Protect all status update routes
 
-app.use('/api/pokemon/', pokemon);
-app.use('/api/users/', users)
+// Serve static files from the React frontend app
+let frontendDir = path.join(__dirname, '..', 'frontend', 'build');
+app.use(express.static(frontendDir));
 
-
-
-let frontend_dir = path.join(__dirname, '..', 'frontend', 'dist')
-
-app.use(express.static(frontend_dir));
-app.get('*', function (req, res) {
-    console.log("received request");
-    res.sendFile(path.join(frontend_dir, "index.html"));
+// Catch all other routes and return the index file (for supporting SPA routing)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDir, 'index.html'));
 });
 
-
-
-app.listen(process.env.PORT || 8000, function() {
-    console.log("Starting server now...")
-})
-
-
-
-// const http = require('http');
-
-// const server = http.createServer(function (request, response) {
-
-//     response.writeHead(200, { 'Content-Type': 'text/plain' });
-//     response.end('Hello web dev!');
-
-// })
-
-// // 127.0.0.1 === localhost
-// server.listen(8000, "127.0.0.1", function() {
-//     console.log("The server has started!")
-// })
+// Listen on the provided port, on all network interfaces.
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
