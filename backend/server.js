@@ -7,12 +7,12 @@ const path = require('path');
 // Import routes
 const userRoutes = require('./apis/user');
 const statusUpdateRoutes = require('./apis/statusUpdate');
-const authenticateToken = require('./apis/authenticateToken'); 
+const authenticateToken = require('./apis/authenticateToken'); // Assuming this middleware is correctly implemented
 
 const app = express();
 
 // MongoDB connection
-const mongoDBEndpoint = process.env.MONGODB_URI || 'mongodb+srv://monayyin:<meiyoumima>@cluster0.7t4mevw.mongodb.net/?retryWrites=true&w=majority';
+const mongoDBEndpoint = process.env.MONGODB_URI || 'your-mongodb-uri';
 mongoose.connect(mongoDBEndpoint, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
