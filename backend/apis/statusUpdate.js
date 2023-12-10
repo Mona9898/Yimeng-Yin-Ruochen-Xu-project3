@@ -3,8 +3,10 @@ const StatusUpdate = require('../db/statusUpdate/statusUpdate.model');
 const authenticateToken = require('./authenticateToken'); // Make sure to implement this
 const router = express.Router();
 
+// Get all status updates
 router.get('/', async (req, res) => {
     try {
+        console.log("get all status updates");
         const updates = await StatusUpdate.find().sort({ timestamp: -1 }).populate('user', 'username');
         res.send(updates);
     } catch (error) {
@@ -12,6 +14,17 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get all status updates for a user
+router.get('/:userId', async (req, res) => {
+    try {
+        const updates = await StatusUpdate.find({ user: req.params.userId }).sort({ timestamp: -1 });
+        res.send(updates);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Create a status update
 router.post('/', authenticateToken, async (req, res) => {
     try {
         const { content } = req.body;

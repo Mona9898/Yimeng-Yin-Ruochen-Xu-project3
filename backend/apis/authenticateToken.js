@@ -8,7 +8,7 @@ const authenticateToken = (req, res, next) => {
         return res.sendStatus(401); // if there's no token
     }
     
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, "your_secret_key", (err, user) => {
         if (err) {
             return res.sendStatus(403); // if the token does not match
         }

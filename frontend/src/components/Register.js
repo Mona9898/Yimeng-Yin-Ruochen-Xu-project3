@@ -12,12 +12,13 @@ function Register() {
     event.preventDefault();
     setError('');
     try {
-      await axios.post('http://localhost:8000/api/users/register', {
+        await axios.post('http://localhost:8000/api/user/register', {
+        //await axios.post('/api/user/register', {
         username,
         password
       });
       // After registering, redirect to the login page
-      navigate.push('/login');
+      navigate('/login');
     } catch (error) {
       setError('Failed to register. Please try again.');
     }

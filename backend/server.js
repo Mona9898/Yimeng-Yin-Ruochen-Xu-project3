@@ -12,8 +12,9 @@ const authenticateToken = require('./apis/authenticateToken'); // Assuming this 
 const app = express();
 
 // MongoDB connection
-const mongoDBEndpoint = process.env.MONGODB_URI || 'your-mongodb-uri';
-mongoose.connect(mongoDBEndpoint, { useNewUrlParser: true, useUnifiedTopology: true });
+const mongoDBEndpoint = process.env.MONGODB_URI || 'mongodb+srv://rachelrcx:mongodb123@neu.y5dq9xd.mongodb.net/?retryWrites=true&w=majority';
+mongoose.connect(mongoDBEndpoint, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected & listening on port'));
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -25,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // API routes
-app.use('/api/users', userRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/statusUpdate', authenticateToken, statusUpdateRoutes); // Protect all status update routes
 
 // Serve static files from the React frontend app
@@ -34,7 +35,8 @@ app.use(express.static(frontendDir));
 
 // Catch all other routes and return the index file (for supporting SPA routing)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendDir, 'index.html'));
+    //res.sendFile(path.join(frontendDir, 'index.html'));
+    res.json({ message: 'Hello from server!' });
 });
 
 // Listen on the provided port, on all network interfaces.

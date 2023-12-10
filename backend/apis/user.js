@@ -3,26 +3,45 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../db/user/user.model');
 
+
+
 const router = express.Router();
 
 // Helper function to generate JWT
 const generateToken = (userId) => {
-  return jwt.sign({ _id: userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
+    // return jwt.sign({ _id: userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+    const payload = {
+        userId: userId
+      };
+      
+    const secret = 'your_secret_key';
+    const token = jwt.sign(payload, secret, { expiresIn: '24h' });
+    return token;
 };
+
 
 router.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
+        console.log(username);
+
         const existingUser = await User.findOne({ username });
+        console.log(existingUser);
         if (existingUser) {
             return res.status(400).send({ message: "Username is already taken" });
         }
         
-        const hashedPassword = await bcrypt.hash(password, 8);
-        const newUser = new User({ username, password: hashedPassword });
+        //const hashedPassword = await bcrypt.hash(password, 8);
+        //const newUser = new User({ username, password: hashedPassword });
+        const newUser = new User({ username, password})
         await newUser.save();
-        
+
+        // console.log(newUser._id);
         const token = generateToken(newUser._id);
+
+        console.log(token);
+        
         res.status(201).send({ token, message: "User registered successfully" });
     } catch (error) {
         res.status(500).send(error);
@@ -32,14 +51,30 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
+        //console.log(username);
+        //console.log(password);
         const user = await User.findOne({ username });
+        console.log(user);
 
-        if (!user || !await bcrypt.compare(password, user.password)) {
+        // if (!user || !await bcrypt.compare(password, user.password)) {
+        //     return res.status(401).send({ message: "Invalid credentials" });
+        // }
+
+        // check if user exists and password is correct
+        if (!user) {
+            console.log(user.username);
+            return res.status(401).send({ message: "Invalid credentials" });
+        }
+        if (password !== user.password) {
+            console.log(user.password);
             return res.status(401).send({ message: "Invalid credentials" });
         }
 
+        // console.log(user.password);/
+
         const token = generateToken(user._id);
         res.status(200).send({ token });
+
     } catch (error) {
         res.status(500).send(error);
     }
