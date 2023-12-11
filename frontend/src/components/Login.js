@@ -16,8 +16,12 @@ function Login() {
         username,
         password
       });
-      
+      console.log(response.data);
       localStorage.setItem('token', response.data.token);
+      // store username in localStorage
+      localStorage.setItem('username', username);
+      // store createdAt in localStorage
+      //localStorage.setItem('createdAt', response.data.user.createdAt);
       
       // redirect to user's status updates
       navigate('/user-status-update');

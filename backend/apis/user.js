@@ -3,8 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../db/user/user.model');
 
-
-
 const router = express.Router();
 
 // Helper function to generate JWT
@@ -20,14 +18,13 @@ const generateToken = (userId) => {
     return token;
 };
 
-
 router.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log(username);
+        //console.log(username);
 
         const existingUser = await User.findOne({ username });
-        console.log(existingUser);
+        //console.log(existingUser);
         if (existingUser) {
             return res.status(400).send({ message: "Username is already taken" });
         }
@@ -40,9 +37,16 @@ router.post('/register', async (req, res) => {
         // console.log(newUser._id);
         const token = generateToken(newUser._id);
 
-        console.log(token);
+        //console.log(token);
         
-        res.status(201).send({ token, message: "User registered successfully" });
+        res.status(201).send({ 
+            token, 
+            message: "User registered successfully",
+            user: {
+                username: newUser.username,
+                createdAt: newUser.createdAt
+            }
+        });
     } catch (error) {
         res.status(500).send(error);
     }
@@ -54,7 +58,7 @@ router.post('/login', async (req, res) => {
         //console.log(username);
         //console.log(password);
         const user = await User.findOne({ username });
-        console.log(user);
+        //console.log(user);
 
         // if (!user || !await bcrypt.compare(password, user.password)) {
         //     return res.status(401).send({ message: "Invalid credentials" });
@@ -62,11 +66,11 @@ router.post('/login', async (req, res) => {
 
         // check if user exists and password is correct
         if (!user) {
-            console.log(user.username);
+            //console.log(user.username);
             return res.status(401).send({ message: "Invalid credentials" });
         }
         if (password !== user.password) {
-            console.log(user.password);
+            //console.log(user.password);
             return res.status(401).send({ message: "Invalid credentials" });
         }
 
@@ -125,6 +129,24 @@ router.delete('/:userId', authenticateToken, async (req, res) => {
     try {
         await User.findByIdAndDelete(req.params.userId);
         res.send({ message: "User deleted successfully" });
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// a GET request to /api/user should return the user's information
+// Endpoint to get the logged-in user's data
+router.get('/', authenticateToken, async (req, res) => {
+    try {
+        // Assuming userId is stored in req.user after token authentication
+        const user = await User.findById(req.user.userId);
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        }
+
+        // Send back the user data, omit sensitive information like password
+        const { password, ...userData } = user.toObject();
+        res.status(200).send(userData);
     } catch (error) {
         res.status(500).send(error);
     }

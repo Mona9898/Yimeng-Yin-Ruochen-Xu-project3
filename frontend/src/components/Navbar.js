@@ -21,6 +21,9 @@ function Navbar() {
         <li>
           <Link to="/register">Register</Link> 
         </li>
+        <li>
+          <Link to="/create-status-update">Create Status Update</Link>
+        </li>
         {localStorage.getItem('token') && (
           <li>
             <button onClick={handleLogout}>Logout</button> 
