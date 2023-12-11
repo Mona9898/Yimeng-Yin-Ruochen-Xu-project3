@@ -26,6 +26,7 @@ function Home() {
             <div key={update._id}>
               <h2>{update.user.username}</h2>
               <p>{update.content}</p>
+              <p>{update.timestamp}</p>
             </div>
           ))
         ) : (

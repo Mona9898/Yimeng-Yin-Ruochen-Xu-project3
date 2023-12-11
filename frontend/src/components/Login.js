@@ -12,14 +12,15 @@ function Login() {
     event.preventDefault(); 
     setError(''); 
     try {
-      const response = await axios.post('http://localhost:8000/api/users/login', {
+      const response = await axios.post('http://localhost:8000/api/user/login', {
         username,
         password
       });
       
       localStorage.setItem('token', response.data.token);
-    
-      navigate.push('/');
+      
+      // redirect to user's status updates
+      navigate('/user-status-update');
     } catch (error) {
       
       setError('Login failed. Please try again.');
