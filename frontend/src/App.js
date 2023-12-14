@@ -5,6 +5,8 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
 import UserStatusUpdate from './components/UserStatusUpdate';
+import CreateStatusUpdate from './components/CreateStatusUpdate';
+
 
 function App() {
   return (
@@ -15,6 +17,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/user-status-update" element={<UserStatusUpdate />} />
         <Route path="/" element={<Home />} />
+        <Route path="/create-status-update" element={<CreateStatusUpdate />} />
       </Routes>
     </Router>
   );

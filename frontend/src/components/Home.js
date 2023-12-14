@@ -8,6 +8,8 @@ function Home() {
     const fetchStatusUpdates = async () => {
       try {
         const response = await axios.get('http://localhost:8000/api/statusUpdate');
+        console.log(response.data);
+        console.log("herw");
         setStatusUpdates(response.data);
       } catch (error) {
         console.error('Error fetching status updates:', error);

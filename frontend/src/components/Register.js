@@ -12,11 +12,14 @@ function Register() {
     event.preventDefault();
     setError('');
     try {
-        await axios.post('http://localhost:8000/api/user/register', {
+        const response = await axios.post('http://localhost:8000/api/user/register', {
         //await axios.post('/api/user/register', {
         username,
         password
       });
+      //localStorage.setItem('token', response.data.token);
+      //localStorage.setItem('username', response.data.username);
+      localStorage.setItem('registeredAt', response.data.registeredAt); 
       // After registering, redirect to the login page
       navigate('/login');
     } catch (error) {

@@ -16,6 +16,9 @@ function Navbar() {
           <Link to="/">Home</Link> 
         </li>
         <li>
+          <Link to="/create-status-update">Create Status Update</Link> 
+        </li>
+        <li>
           <Link to="/login">Login</Link>
         </li>
         <li>

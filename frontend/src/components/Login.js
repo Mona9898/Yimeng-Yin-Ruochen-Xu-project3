@@ -16,8 +16,10 @@ function Login() {
         username,
         password
       });
-      
+      console.log(response.data);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('username', response.data.username);
+      console.log(response.data.username);
       
       // redirect to user's status updates
       navigate('/user-status-update');

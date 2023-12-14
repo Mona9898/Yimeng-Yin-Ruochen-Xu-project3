@@ -15,9 +15,17 @@ router.get('/', async (req, res) => {
 });
 
 // Get all status updates for a user
-router.get('/:userId', async (req, res) => {
+router.get('/:username', async (req, res) => {
     try {
-        const updates = await StatusUpdate.find({ user: req.params.userId }).sort({ timestamp: -1 });
+        console.log("get all status updates for a user????");
+        //const username = req.params.username;
+        //console.log(username);
+        // const updates = await StatusUpdate.find({  });
+        const updates = await StatusUpdate.find({ username: req.params.username });
+        
+
+        // const updates = await StatusUpdate.find({ username }).sort({ timestamp: -1 });
+        console.log(updates);
         res.send(updates);
     } catch (error) {
         res.status(500).send(error);
@@ -27,9 +35,10 @@ router.get('/:userId', async (req, res) => {
 // Create a status update
 router.post('/', authenticateToken, async (req, res) => {
     try {
-        const { content } = req.body;
+        const { content, username } = req.body;
         const newUpdate = new StatusUpdate({
             user: req.user._id, // Ensure the user is taken from the token
+            username: username,
             content
         });
         await newUpdate.save();

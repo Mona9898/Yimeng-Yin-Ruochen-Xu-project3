@@ -24,25 +24,24 @@ const generateToken = (userId) => {
 router.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log(username);
 
         const existingUser = await User.findOne({ username });
-        console.log(existingUser);
+
         if (existingUser) {
             return res.status(400).send({ message: "Username is already taken" });
         }
-        
-        //const hashedPassword = await bcrypt.hash(password, 8);
-        //const newUser = new User({ username, password: hashedPassword });
+    
         const newUser = new User({ username, password})
+
         await newUser.save();
 
-        // console.log(newUser._id);
         const token = generateToken(newUser._id);
-
-        console.log(token);
         
-        res.status(201).send({ token, message: "User registered successfully" });
+        res.status(201).send({ 
+            token, 
+            message: "User registered successfully",
+            registeredAt: newUser.createdTime
+        });
     } catch (error) {
         res.status(500).send(error);
     }
@@ -54,7 +53,7 @@ router.post('/login', async (req, res) => {
         //console.log(username);
         //console.log(password);
         const user = await User.findOne({ username });
-        console.log(user);
+        //console.log(user);
 
         // if (!user || !await bcrypt.compare(password, user.password)) {
         //     return res.status(401).send({ message: "Invalid credentials" });
@@ -62,18 +61,20 @@ router.post('/login', async (req, res) => {
 
         // check if user exists and password is correct
         if (!user) {
-            console.log(user.username);
+            //console.log(user.username);
             return res.status(401).send({ message: "Invalid credentials" });
         }
         if (password !== user.password) {
-            console.log(user.password);
             return res.status(401).send({ message: "Invalid credentials" });
         }
 
-        // console.log(user.password);/
-
+        console.log(user.username);
+        console.log(user.password);
+        // const username1 = user.username;
+        
         const token = generateToken(user._id);
-        res.status(200).send({ token });
+        res.status(200).send({ token, username });
+
 
     } catch (error) {
         res.status(500).send(error);

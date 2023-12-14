@@ -10,6 +10,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    createdTime: {
+        type: Date,
+        default: Date.now
+    },
 });
 
 module.exports = UserSchema;

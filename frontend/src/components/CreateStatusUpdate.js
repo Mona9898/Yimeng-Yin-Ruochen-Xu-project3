@@ -11,6 +11,7 @@ function CreateStatusUpdate() {
     try {
       const token = localStorage.getItem('token'); 
       await axios.post('http://localhost:8000/api/statusUpdate', {
+        username: localStorage.getItem('username'),
         content
       }, {
         headers: { Authorization: `Bearer ${token}` }
