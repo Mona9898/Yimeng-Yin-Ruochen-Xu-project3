@@ -47,6 +47,7 @@ function UserStatusUpdates() {
       {updates.map((update) => (
         <div key={update._id} className="user-update">
           <p>{update.content}</p>
+          <p>{new Date(update.timestamp).toLocaleDateString("en-US")}</p>
           <button onClick={() => handleDelete(update._id)}>Delete</button>
         </div>
       ))}

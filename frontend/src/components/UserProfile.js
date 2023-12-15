@@ -31,6 +31,7 @@ function UserProfile() {
           statusUpdates.map((update) => (
             <div key={update._id} className="status-update">
               <p>{update.content}</p>
+              <p>{new Date(update.timestamp).toLocaleDateString("en-US")}</p>
             </div>
           ))
         ) : (
