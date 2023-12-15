@@ -6,8 +6,8 @@ const router = express.Router();
 // Get all status updates
 router.get('/', async (req, res) => {
     try {
-        console.log("get all status updates");
-        const updates = await StatusUpdate.find().sort({ timestamp: -1 }).populate('user', 'username');
+        // get all status updates
+        const updates = await StatusUpdate.find().sort({ timestamp: -1 });
         res.send(updates);
     } catch (error) {
         res.status(500).send(error);
@@ -17,15 +17,7 @@ router.get('/', async (req, res) => {
 // Get all status updates for a user
 router.get('/:username', async (req, res) => {
     try {
-        console.log("get all status updates for a user????");
-        //const username = req.params.username;
-        //console.log(username);
-        // const updates = await StatusUpdate.find({  });
         const updates = await StatusUpdate.find({ username: req.params.username });
-        
-
-        // const updates = await StatusUpdate.find({ username }).sort({ timestamp: -1 });
-        console.log(updates);
         res.send(updates);
     } catch (error) {
         res.status(500).send(error);
@@ -33,11 +25,10 @@ router.get('/:username', async (req, res) => {
 });
 
 // Create a status update
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { content, username } = req.body;
         const newUpdate = new StatusUpdate({
-            user: req.user._id, // Ensure the user is taken from the token
             username: username,
             content
         });
@@ -71,7 +62,7 @@ router.delete('/:updateId', authenticateToken, async (req, res) => {
     try {
         const deletedUpdate = await StatusUpdate.findOneAndDelete({
             _id: req.params.updateId,
-            user: req.user._id // Ensure the update belongs to the user
+            user: req.user._id
         });
         if (!deletedUpdate) {
             return res.status(404).send({ message: "Status update not found or user not authorized to delete it" });

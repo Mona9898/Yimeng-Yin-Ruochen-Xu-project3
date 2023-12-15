@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Register.css';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
@@ -13,24 +14,26 @@ function Register() {
     setError('');
     try {
         const response = await axios.post('http://localhost:8000/api/user/register', {
-        //await axios.post('/api/user/register', {
         username,
         password
       });
-      //localStorage.setItem('token', response.data.token);
-      //localStorage.setItem('username', response.data.username);
+      localStorage.setItem('username', response.data.username);
       localStorage.setItem('registeredAt', response.data.registeredAt); 
-      // After registering, redirect to the login page
-      navigate('/login');
+      // After registering, redirect to the user page
+      navigate('/user-status-update');
     } catch (error) {
-      setError('Failed to register. Please try again.');
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     }
   };
 
   return (
-    <div>
+    <div className="register-container">
       <h1>Register</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
         <label>
           Username:

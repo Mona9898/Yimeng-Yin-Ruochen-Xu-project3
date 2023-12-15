@@ -2,14 +2,10 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../db/user/user.model');
-
-
-
 const router = express.Router();
 
 // Helper function to generate JWT
 const generateToken = (userId) => {
-    // return jwt.sign({ _id: userId }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
     const payload = {
         userId: userId
@@ -28,17 +24,16 @@ router.post('/register', async (req, res) => {
         const existingUser = await User.findOne({ username });
 
         if (existingUser) {
+            console.log(existingUser);
             return res.status(400).send({ message: "Username is already taken" });
         }
     
         const newUser = new User({ username, password})
 
         await newUser.save();
-
-        const token = generateToken(newUser._id);
         
         res.status(201).send({ 
-            token, 
+            username: newUser.username, 
             message: "User registered successfully",
             registeredAt: newUser.createdTime
         });
@@ -50,28 +45,13 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        //console.log(username);
-        //console.log(password);
         const user = await User.findOne({ username });
-        //console.log(user);
-
-        // if (!user || !await bcrypt.compare(password, user.password)) {
-        //     return res.status(401).send({ message: "Invalid credentials" });
-        // }
-
-        // check if user exists and password is correct
         if (!user) {
-            //console.log(user.username);
             return res.status(401).send({ message: "Invalid credentials" });
         }
         if (password !== user.password) {
             return res.status(401).send({ message: "Invalid credentials" });
         }
-
-        console.log(user.username);
-        console.log(user.password);
-        // const username1 = user.username;
-        
         const token = generateToken(user._id);
         res.status(200).send({ token, username });
 

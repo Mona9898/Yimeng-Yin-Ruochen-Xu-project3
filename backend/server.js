@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 // API routes
 app.use('/api/user', userRoutes);
-app.use('/api/statusUpdate', authenticateToken, statusUpdateRoutes); // Protect all status update routes
+app.use('/api/statusUpdate', statusUpdateRoutes);
 
 // Serve static files from the React frontend app
 let frontendDir = path.join(__dirname, '..', 'frontend', 'build');

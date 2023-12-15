@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './Login.css'; 
 import { useNavigate } from 'react-router-dom'; 
 
 function Login() {
@@ -16,23 +17,22 @@ function Login() {
         username,
         password
       });
-      console.log(response.data);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('username', response.data.username);
-      console.log(response.data.username);
-      
-      // redirect to user's status updates
       navigate('/user-status-update');
     } catch (error) {
-      
-      setError('Login failed. Please try again.');
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      }else{
+        setError('Login failed. Please try again.');
+      }
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h1>Login</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>} 
+      {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
         <label>
           Username: 
