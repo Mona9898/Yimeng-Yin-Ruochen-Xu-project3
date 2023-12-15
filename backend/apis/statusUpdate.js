@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 // Get all status updates for a user
 router.get('/:username', async (req, res) => {
     try {
-        const updates = await StatusUpdate.find({ username: req.params.username });
+        const updates = await StatusUpdate.find({ username: req.params.username }).sort({ timestamp: -1 });
         res.send(updates);
     } catch (error) {
         res.status(500).send(error);
